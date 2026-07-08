@@ -24,4 +24,9 @@ public class OrderController {
                                            @RequestParam Integer quantity) {
         return BaseResponse.success(orderService.createOrder(userId, productId, quantity));
     }
+
+    @PostMapping("/cancel/{id}")
+    public BaseResponse<Order> cancelOrder(@PathVariable Long id) {
+        return BaseResponse.success(orderService.cancelOrder(id));
+    }
 }

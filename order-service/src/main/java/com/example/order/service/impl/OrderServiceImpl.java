@@ -22,6 +22,36 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     private final ProductClient productClient;
 
     @Override
+    @GlobalTransactional(name = "order-cancel", rollbackFor = Exception.class)
+    public Order cancelOrder(Long orderId) {
+        Order order = getById(orderId);
+        if (order == null) {
+            throw new BusinessException("Order not found");
+        }
+        if (order.getStatus() != 0) {
+            throw new BusinessException("Order cannot be cancelled, current status: " + order.getStatus());
+        }
+
+        // 1. 恢复商品库存
+        BaseResponse<Void> restoreResp = productClient.restoreStock(order.getProductId(), order.getQuantity());
+        if (restoreResp.getCode() != 200) {
+            throw new BusinessException("Failed to restore stock: " + restoreResp.getMsg());
+        }
+
+        // 2. 更新订单状态为已取消（2）
+        lambdaUpdate()
+                .eq(Order::getId, orderId)
+                .set(Order::getStatus, 2)
+                .update();
+
+        order.setStatus(2);
+        log.info("Order cancelled: id={}, productId={}, quantity={}",
+                orderId, order.getProductId(), order.getQuantity());
+
+        return order;
+    }
+
+    @Override
     @GlobalTransactional(name = "order-create", rollbackFor = Exception.class)
     public Order createOrder(Long userId, Long productId, Integer quantity) {
         // 1. 查询商品信息

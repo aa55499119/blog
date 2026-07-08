@@ -6,6 +6,11 @@ import com.example.order.entity.Order;
 public interface OrderService extends IService<Order> {
 
     /**
+     * 取消订单（恢复库存）
+     */
+    Order cancelOrder(Long orderId);
+
+    /**
      * 创建订单（含分布式事务）
      */
     Order createOrder(Long userId, Long productId, Integer quantity);

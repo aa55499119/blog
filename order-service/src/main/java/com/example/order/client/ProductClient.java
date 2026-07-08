@@ -17,4 +17,7 @@ public interface ProductClient {
 
     @PostMapping("/deduct")
     BaseResponse<Void> deductStock(@RequestParam Long productId, @RequestParam Integer quantity);
+
+    @PostMapping("/restore")
+    BaseResponse<Void> restoreStock(@RequestParam Long productId, @RequestParam Integer quantity);
 }

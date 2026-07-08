@@ -28,4 +28,10 @@ public class ProductController {
         productService.deductStock(productId, quantity);
         return BaseResponse.success();
     }
+
+    @PostMapping("/restore")
+    public BaseResponse<Void> restoreStock(@RequestParam Long productId, @RequestParam Integer quantity) {
+        productService.restoreStock(productId, quantity);
+        return BaseResponse.success();
+    }
 }
