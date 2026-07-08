@@ -1,0 +1,14 @@
+target/
+*.class
+*.jar
+*.war
+*.log
+*.iml
+.idea/
+.DS_Store
+*.swp
+*.swo
+data/
+logs/
+HELP.md
+!.mvn/wrapper/maven-wrapper.jar
